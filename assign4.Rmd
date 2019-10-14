@@ -6,19 +6,87 @@ output: html_notebook
 
 For the regular expression exercises, try writing first using regular expressions directly, then try using rverbalexpressions. Provide the code for both. 
 
+
+```{r}
+devtools::install_github("VerbalExpressions/RVerbalExpressions")
+```
+
+```{r}
+library(RVerbalExpressions)
+library(lubridate)
+```
+
+
 # Part 1
 
 ## R4DS 16.4.5
 
 Create a vector of dates giving the first day of every month in the current year. 
 
+
+
+
+```{r}
+floor_date(today(), unit = "year") + months(0:11)
+```
+
+
 Write a function that given your birthday (as a date), returns how old you are in years.
 
+```{r}
+my_birthday <- function(birthday) {
+  as.numeric(as.duration(today() - birthday), "years") %/% 1
+}
+birthday <- ymd(19950806)
+my_birthday(birthday)
+```
+
+
 Write a function that given your birthday, returns the day of the week you were born on. 
+
+
+```{r}
+
+my_birthday_weekday <- function(birthday) {
+  wday(birthday)
+}
+birthday <- ymd(19950806)
+my_birthday_weekday(birthday)
+
+
+```
+
 
 ## R4DS 14.3.2.1
 
 Given the corpus of common words in stringr::words, create regular expressions that find all words that have seven letters or more. (Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.)
+
+
+
+
+Regular expressions:
+```{r}
+
+str_view(stringr::words, ".......", match = TRUE)
+
+```
+Rverbalexpressions:
+```{r}
+allwords<-stringr::words
+
+seven_letters_more <- rx() %>% 
+  rx_start_of_line() %>% 
+  rx_word_char() %>%
+  rx_repeat_previous(7) %>%
+  rx_anything() %>% 
+  rx_end_of_line() %>% 
+  print()
+
+str_view(allwords,seven_letters_more, match = T)
+
+```
+
+
 
 ## R4DS 14.3.3.1
 
@@ -26,9 +94,98 @@ Use str_detect to find all words that:
 
 That only contain consonants. (Hint: thinking about matching “not”-vowels.)
 
+Regular expressions:
+
+```{r}
+a<-str_detect(stringr::words, "^[^aeiou]+$")
+word_list[a]
+
+```
+
+
+Rverbalexpressions:
+
+```{r}
+no_vowel <- rx() %>% 
+  rx_start_of_line() %>% 
+  rx_anything_but('aeiou') %>% 
+  rx_end_of_line()
+
+word_list[str_detect(stringr::words, no_vowel)]
+```
+
+
 Empirically verify the rule “i before e except after c”.
 
+Regular expressions
+```{r}
+word_list[str_detect(stringr::words, "([^c]ie)")]
+```
+Rverbalexpressions:
+```{r}
+rule_NOc_ie <- rx() %>% 
+  rx_anything_but("c") %>% 
+  rx_find("ie") %>% 
+  print()
+
+word_list[str_detect(stringr::words,rule_NOc_ie)]
+
+```
+
+
 Create a regular expression that will match telephone numbers as commonly written in the US. Split this up into multiple expressions as needed.
+
+Regular expressions:
+Phone numbers have a format like `123-456-7890` or "123.456.7890"
+```{r}
+x <- c("123.456.7890","123-456-7890", "(123)456-7890")
+grepl("^\\d{3}[-.]\\d{3}[-.]\\d{4}$",x)
+```
+Phone numbers have a format like (123)456-7890
+```{r}
+grepl("^\\(\\d{3}\\)\\d{3}-\\d{4}$",x)
+```
+
+
+Rverbalexpressions:
+Phone numbers have a format like `123-456-7890` or "123.456.7890"
+```{r}
+telrx_US_1<-rx() %>%
+  rx_start_of_line() %>% 
+  rx_digit() %>% 
+  rx_repeat_previous(3) %>% 
+  rx_any_of("-.") %>% 
+  rx_digit() %>% 
+  rx_repeat_previous(3) %>% 
+  rx_any_of("-.") %>% 
+  rx_digit() %>% 
+  rx_repeat_previous(4) %>% 
+  rx_end_of_line() %>% 
+  print() %>% 
+  grepl(c("123.456.7890","123-456-7890", "(123)456-7890")) %>% 
+  print()
+```
+Phone numbers have a format like (123)456-7890
+
+```{r}
+telrx_US_2<-rx() %>%
+  rx_start_of_line() %>% 
+  rx_find("(") %>%
+  rx_digit() %>% 
+  rx_repeat_previous(3) %>% 
+  rx_find(")") %>%
+  rx_digit() %>% 
+  rx_repeat_previous(3) %>% 
+  rx_any_of("-") %>% 
+  rx_digit() %>% 
+  rx_repeat_previous(4) %>% 
+  rx_end_of_line() %>% 
+  print() %>% 
+  grepl(c("123.456.7890","123-456-7890", "(123)456-7890")) %>% 
+  print()
+
+```
+
 
 # Part 2
 
@@ -39,11 +196,13 @@ Choose a dataset (this can be the same dataset as the last assignment, or a new 
 
 2. Read in and check data
 
-2. Clean up the data. 
+2. Clean up the data.  (im 加载数据)
 
 *Note: You may request that score for these sections replace your score for the coding portion of Assignment 3.*
 
-4. Using best practices, write four functions which add engineered features to the dataset, including a description and rationale. Include a test to determine whether the features are working as intended. 
+I want to use these sections to replace my score for my coding portion of assignment 3.
+
+4. Using best practices, write four functions which add engineered features to the dataset, including a description and rationale. Include a test to determine whether the features are working as intended.  
 
 5. Prepare the data for modeling
 
