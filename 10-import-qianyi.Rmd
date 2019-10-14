@@ -89,7 +89,7 @@ df %>%
 Through a series of check, I find that these numberical variables are all in the reasonable range. Thus I do not need to do any other process.
 
 # 3. Clean up the data
-After finishing last procedure, I found that the dataset is very clean. Thus I do some changes on type conversion and 
+After finishing last procedure, I found that the dataset is very clean. Thus I do some changes on type conversion and do other operations.
 
 Convert vpp_lic column to logical from numerical. This is because its value is either 0 or 1. Thus I think that I can convert it into logical type for being better observed.
 ```{r type conversion for vpp_lic column }
