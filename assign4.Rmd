@@ -188,7 +188,7 @@ telrx_US_2<-rx() %>%
 
 
 # Part 2
-
+# In this part, please look my 10-import-qianyi.rmd and 30-feature-engineering-qianyi.rmd.
 
 Choose a dataset (this can be the same dataset as the last assignment, or a new one). Define a predictive modeling problem. Create the appropriate files and notebooks to do the following:
 
@@ -196,7 +196,7 @@ Choose a dataset (this can be the same dataset as the last assignment, or a new 
 
 2. Read in and check data
 
-2. Clean up the data.  (im 加载数据)
+2. Clean up the data.  
 
 *Note: You may request that score for these sections replace your score for the coding portion of Assignment 3.*
 
